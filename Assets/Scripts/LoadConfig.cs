@@ -2,34 +2,42 @@ using UnityEngine;
 using System.IO;
 using System;
 using SimpleJSON;
-
+using SFB;
 public class LoadConfig : MonoBehaviour
 {
-    public string fileName;
-    private string directory = "/LessonConfig/";
-    private string jsonString;
     private JSONNode config;
-    private float G;
+    public static Vector3 CameraLookat;
     public void SetSceneToConfig()
     {
         DeleteAllGravityBody();
-        config = GetJsonNode();
 
         // Create scene objects
         foreach (JSONNode node in config["bodies"])
         {
             CreateGravityBody(node);
         }
+
+        GravityBody.Initialize();
+
+        Vector3 cameraLookat = JSONNodeToVector3(config["cameraLookat"]);
+        Vector3 cameraPosition = JSONNodeToVector3(config["cameraPosition"]);
+        CameraLookat = cameraLookat;
+
+        Camera.main.transform.position = cameraPosition;
+        Camera.main.transform.LookAt(cameraLookat);
     }
 
     public void SetGravConst()
     {
         if (config == null)
         {
-            config = GetJsonNode();
+            config = GetJsonNode("asdf");
         }
-        G = config["constants"]["G"].AsFloat;
-        GravityBody.G_Runtime = G;
+    }
+
+    Vector3 JSONNodeToVector3(JSONNode node)
+    {
+        return new Vector3(node[0], node[1], node[2]);
     }
 
     private void DeleteAllGravityBody()
@@ -47,28 +55,47 @@ public class LoadConfig : MonoBehaviour
         Vector3 position = new Vector3(node["position"][0], node["position"][1], node["position"][2]);
         Vector3 initVelocity = new Vector3(node["initVelocity"][0], node["initVelocity"][1], node["initVelocity"][2]);
         float mass = node["mass"].AsFloat;
+        float size = node["size"].AsFloat;
+        Color color = JSONNodeToColor(node["color"]);
+        bool includeTrail = node["trail"].AsBool;
 
-        GameObject gObj = GravityBody.CreateGravityBody(name, position, mass, 10, MaterialColours.Colours.BLUE);
-    }
-
-    public void ProcessJson(String json)
-    {
-        jsonString = json;
-        config = JSON.Parse(jsonString);
-        Debug.Log(jsonString);
-    }
-
-    private JSONNode GetJsonNode()
-    {
-        string projectPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf('/'));
-        string fullPath = projectPath + directory + fileName;
-        if (File.Exists(fullPath))
+        if (color == null)
         {
-            return JSON.Parse(File.ReadAllText(fullPath));
+            Debug.Log("Color is null");
+            color = Color.gray;
+        }
+
+        GameObject gObj = GravityBody.CreateGravityBody(name, position, mass, size, color, includeTrail);
+    }
+
+    private Color JSONNodeToColor(JSONNode node)
+    {
+        float r = node[0] / 255f;
+        float g = node[1] / 255f;
+        float b = node[2] / 255f;
+        return new Color(r, g, b, 1f);
+    }
+
+    public void OpenFile()
+    {
+        String[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+        config = GetJsonNode(paths[0]);
+        if (config == null)
+        {
+            return;
+        }
+        SetSceneToConfig();
+    }
+
+    private JSONNode GetJsonNode(String filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            return JSON.Parse(File.ReadAllText(filePath));
         }
         else
         {
-            Debug.Log(String.Format("Couldn't find filepath {0}", fullPath));
+            Debug.Log(String.Format("Couldn't find filepath {0}", filePath));
             return null;
         }
     }

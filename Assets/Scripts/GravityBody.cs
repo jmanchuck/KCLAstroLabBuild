@@ -28,7 +28,6 @@ public class GravityBody : MonoBehaviour
 {
     // STATIC VARIABLES // 
     public static float G_Runtime = 67f;
-    public static bool initialized;
     public static List<GravityBody> AllBodies = new List<GravityBody>();
     public static bool SoundOnCollision;
 
@@ -41,11 +40,6 @@ public class GravityBody : MonoBehaviour
     public Vector3 initVelocity;
     private float radius;
 
-    // Initialisation and gathering references
-    protected void Awake()
-    {
-        GravityBody.Initialize();
-    }
 
     // This is where all the physics happens
     // Upon every update frame, Unity will call the functions defined within this body
@@ -78,11 +72,6 @@ public class GravityBody : MonoBehaviour
     // Gets all references to gravity bodies and places them in static list for interactions
     public static void Initialize()
     {
-        if (GravityBody.initialized)
-        {
-            return;
-        }
-
         // Find all GravityBody objects and put them in static list
         CollectAllGB();
 
@@ -90,7 +79,6 @@ public class GravityBody : MonoBehaviour
         {
             gb.AssignVariables();
         }
-        GravityBody.initialized = true;
     }
 
     // Finds all GravityBody objects in the Scene and adds them to the static list
@@ -151,11 +139,13 @@ public class GravityBody : MonoBehaviour
         audioSource.Play();
     }
 
-    public static GameObject CreateGravityBody(string name, Vector3 position, float mass, float scale, MaterialColours.Colours colour, bool trail = false)
+    public static GameObject CreateGravityBody(string name, Vector3 position, float mass, float scale, Color color, bool trail = false)
     {
         GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         Rigidbody rb = gObj.AddComponent<Rigidbody>();
         GravityBody gb = gObj.AddComponent<GravityBody>();
+        Renderer renderer = gb.GetComponent<Renderer>();
+        MaterialPropertyBlock props = new MaterialPropertyBlock();
         if (trail)
         {
             // Trail gameobject as child of GB so they scale together
@@ -178,7 +168,11 @@ public class GravityBody : MonoBehaviour
         gObj.transform.position = position;
         gObj.transform.localScale = scale * Vector3.one;
         gb.mass = mass;
-        gObj.GetComponent<Renderer>().material = MaterialColours.GetMaterial(colour);
+
+        props.SetColor("_Color", color);
+
+        renderer.SetPropertyBlock(props);
+
         return gObj;
     }
 

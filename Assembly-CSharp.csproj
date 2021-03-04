@@ -38,7 +38,6 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\GravityBody.cs" />
      <Compile Include="Assets\Scripts\LoadConfig.cs" />
-     <Compile Include="Assets\Scripts\MaterialColours.cs" />
      <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserLinux.cs" />
      <Compile Include="Assets\StandaloneFileBrowser\Sample\BasicSample.cs" />
      <Compile Include="Assets\StandaloneFileBrowser\Sample\CanvasSampleOpenFileText.cs" />
@@ -51,6 +50,10 @@
      <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserMac.cs" />
      <Compile Include="Assets\StandaloneFileBrowser\StandaloneFileBrowserEditor.cs" />
      <Compile Include="Assets\StandaloneFileBrowser\Sample\CanvasSampleSaveFileText.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\PlayPauseButton.cs" />
+     <Compile Include="Assets\TextManager.cs" />
+     <None Include="Assets\Resources\DefaultShader.shader" />
     <Reference Include="UnityEngine">
         <HintPath>/Applications/Unity/Hub/Editor/2020.1.4f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

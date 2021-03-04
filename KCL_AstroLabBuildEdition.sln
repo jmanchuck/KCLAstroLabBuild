@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Timeline", "Unity.Tim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{cb6b94cb-d1e6-accb-def1-ac40c998cc3a}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{b4d80e45-d90c-800f-6218-bad2897c1d07}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.TextMeshPro.Editor", "Unity.TextMeshPro.Editor.csproj", "{bff2b2d5-1886-8807-01ce-6bdad3244a44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Timeline.Editor", "Unity.Timeline.Editor.csproj", "{f15ed748-5bdf-5c64-6cca-40005d0f16d7}"
@@ -42,6 +44,8 @@ Global
 		{2e9ef560-0e59-2863-5fc9-f231b6a79e3c}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{cb6b94cb-d1e6-accb-def1-ac40c998cc3a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{cb6b94cb-d1e6-accb-def1-ac40c998cc3a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{b4d80e45-d90c-800f-6218-bad2897c1d07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{b4d80e45-d90c-800f-6218-bad2897c1d07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{bff2b2d5-1886-8807-01ce-6bdad3244a44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{bff2b2d5-1886-8807-01ce-6bdad3244a44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{f15ed748-5bdf-5c64-6cca-40005d0f16d7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
