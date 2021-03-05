@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 using System;
 using SimpleJSON;
@@ -6,16 +7,48 @@ using SFB;
 public class LoadConfig : MonoBehaviour
 {
     private JSONNode config;
+    private String filePath;
     public static Vector3 CameraLookat;
+    public Text loadPathText;
+    public Button selectFileButton;
+    private static LoadConfig instance = null;
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+    private void Start()
+    {
+        String savedPath = PlayerPrefs.GetString("filePath", "");
+        if (savedPath != "")
+        {
+            filePath = savedPath;
+            config = GetJsonNode(filePath);
+            SetSceneToConfig();
+        }
+    }
     public void SetSceneToConfig()
     {
         DeleteAllGravityBody();
 
-        // Create scene objects
+        if (config == null)
+        {
+            return;
+        }
+
         foreach (JSONNode node in config["bodies"])
         {
             CreateGravityBody(node);
         }
+
+        loadPathText.text = this.filePath;
 
         GravityBody.Initialize();
 
@@ -25,14 +58,8 @@ public class LoadConfig : MonoBehaviour
 
         Camera.main.transform.position = cameraPosition;
         Camera.main.transform.LookAt(cameraLookat);
-    }
 
-    public void SetGravConst()
-    {
-        if (config == null)
-        {
-            config = GetJsonNode("asdf");
-        }
+        TextManager.GetInstance().UpdateCameraText();
     }
 
     Vector3 JSONNodeToVector3(JSONNode node)
@@ -65,7 +92,7 @@ public class LoadConfig : MonoBehaviour
             color = Color.gray;
         }
 
-        GameObject gObj = GravityBody.CreateGravityBody(name, position, mass, size, color, includeTrail);
+        GameObject gObj = GravityBody.CreateGravityBody(name, position, mass, size, color, initVelocity, includeTrail);
     }
 
     private Color JSONNodeToColor(JSONNode node)
@@ -85,12 +112,14 @@ public class LoadConfig : MonoBehaviour
             return;
         }
         SetSceneToConfig();
+        PlayerPrefs.SetString("filePath", this.filePath);
     }
 
     private JSONNode GetJsonNode(String filePath)
     {
-        if (File.Exists(filePath))
+        if (File.Exists(filePath) && isJson(filePath))
         {
+            this.filePath = filePath;
             return JSON.Parse(File.ReadAllText(filePath));
         }
         else
@@ -98,5 +127,21 @@ public class LoadConfig : MonoBehaviour
             Debug.Log(String.Format("Couldn't find filepath {0}", filePath));
             return null;
         }
+    }
+
+    private bool isJson(String filePath)
+    {
+        return Path.GetExtension(filePath) == ".json";
+    }
+
+    public void hideUI(bool hide)
+    {
+        loadPathText.gameObject.SetActive(hide);
+        selectFileButton.gameObject.SetActive(hide);
+    }
+
+    public static LoadConfig GetInstance()
+    {
+        return instance;
     }
 }

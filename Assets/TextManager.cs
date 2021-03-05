@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class TextManager : MonoBehaviour
@@ -9,11 +7,23 @@ public class TextManager : MonoBehaviour
     public Text distanceText;
     public Text cameraPosText;
     public Text cameraLookatText;
-
-    private void Start()
+    private static TextManager instance = null;
+    private void Awake()
     {
-        cameraPosText.text = "Camera position:\n" + Camera.main.transform.position.ToString();
-        cameraLookatText.text = "Camera Lookat:\n" + LoadConfig.CameraLookat.ToString();
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
+    public void UpdateCameraText()
+    {
+        cameraPosText.text = "cameraPosition " + Camera.main.transform.position.ToString();
+        cameraLookatText.text = "cameraLookat " + LoadConfig.CameraLookat.ToString();
     }
 
     public void UpdateDistanceText()
@@ -32,5 +42,10 @@ public class TextManager : MonoBehaviour
     void Update()
     {
         timeText.text = "Time: " + Time.time.ToString("F2");
+    }
+
+    public static TextManager GetInstance()
+    {
+        return instance;
     }
 }

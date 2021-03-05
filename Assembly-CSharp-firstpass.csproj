@@ -226,11 +226,11 @@
     <Reference Include="UnityEditor">
         <HintPath>/Applications/Unity/Hub/Editor/2020.1.4f1/Unity.app/Contents/Managed/UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Ookii.Dialogs">
-        <HintPath>/Users/jmanchuck/Coding_Projects/KCL_AstroLabBuildEdition/Assets/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms">
         <HintPath>/Users/jmanchuck/Coding_Projects/KCL_AstroLabBuildEdition/Assets/StandaloneFileBrowser/Plugins/System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs">
+        <HintPath>/Users/jmanchuck/Coding_Projects/KCL_AstroLabBuildEdition/Assets/StandaloneFileBrowser/Plugins/Ookii.Dialogs.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
         <HintPath>/Applications/Unity/Hub/Editor/2020.1.4f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

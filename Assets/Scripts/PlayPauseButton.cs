@@ -11,9 +11,16 @@ public class PlayPauseButton : MonoBehaviour
     {
         button = GetComponent<Button>();
     }
-    public void ChangeImage()
+    public void UpdateImage()
     {
-        GameManager.TogglePause();
+        GameManager.GetInstance().TogglePause();
+        UpdateToPauseState();
+    }
+
+
+
+    public void UpdateToPauseState()
+    {
         if (GameManager.paused)
         {
             button.image.sprite = playSprite;

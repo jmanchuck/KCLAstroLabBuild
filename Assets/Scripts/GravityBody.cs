@@ -1,29 +1,10 @@
 ﻿// Created by jmanchuck October 2020
 
-/* 
-    A message for those of you who have came here to read the source code...
-    
-    Welcome.
-
-    I applaud your curiosity to learn more and see what's happening behind the scenes. 
-    Perhaps some of you may already understand this code, others may see it as some 
-    monstrosity of words and numbers. 
-
-    I have documented this code to (hopefully) make it easier for you to read.
-    The functions that carry out the meat of the simulation are FixedUpdate and Attract,
-    so have a look at those.
-    
-    Everything else is just some extra sugar and padding. 
-
-    If you have any questions, feel free to reach out to me if you can find my contact.
-*/
-
 using System.Collections.Generic;
 using UnityEngine;
 
 // GravityBody is the script that is in charge of calculating the kinematics of each body
 // via Newton's Law of Gravitation. 
-
 public class GravityBody : MonoBehaviour
 {
     // STATIC VARIABLES // 
@@ -41,11 +22,8 @@ public class GravityBody : MonoBehaviour
     private float radius;
 
 
-    // This is where all the physics happens
-    // Upon every update frame, Unity will call the functions defined within this body
     protected void FixedUpdate()
     {
-        // Attract all the other gravity objects to itself (this)
         foreach (GravityBody body in AllBodies)
         {
             if (body != this)
@@ -55,15 +33,11 @@ public class GravityBody : MonoBehaviour
         }
     }
 
-    // Attract another gravitational body
-    // This is where Newton's law of gravitation happens
     protected virtual void Attract(GravityBody gb)
     {
         if (gb != null)
         {
             Vector3 r_to_this = this.bodyTransform.position - gb.bodyTransform.position;
-
-            // Newton's law of gravitation
             Vector3 force = r_to_this * G_Runtime * gb.rb.mass * this.rb.mass / Mathf.Pow(r_to_this.magnitude, 3);
             gb.SetForceTo(force);
         }
@@ -139,7 +113,7 @@ public class GravityBody : MonoBehaviour
         audioSource.Play();
     }
 
-    public static GameObject CreateGravityBody(string name, Vector3 position, float mass, float scale, Color color, bool trail = false)
+    public static GameObject CreateGravityBody(string name, Vector3 position, float mass, float scale, Color color, Vector3 initVelocity, bool trail = false)
     {
         GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         Rigidbody rb = gObj.AddComponent<Rigidbody>();
@@ -168,6 +142,9 @@ public class GravityBody : MonoBehaviour
         gObj.transform.position = position;
         gObj.transform.localScale = scale * Vector3.one;
         gb.mass = mass;
+        gb.initVelocity = initVelocity;
+
+        renderer.material.shader = Shader.Find("Custom/DefaultShader");
 
         props.SetColor("_Color", color);
 
@@ -188,50 +165,6 @@ public class GravityBody : MonoBehaviour
     public void SetForceTo(Vector3 force)
     {
         rb.AddForce(force);
-    }
-
-    public Transform GetTransform()
-    {
-        return this.transform;
-    }
-
-    public Rigidbody GetRigidbody()
-    {
-        return this.rb;
-    }
-
-    public float GetRadius()
-    {
-        return this.radius;
-    }
-
-    public float GetMass()
-    {
-        return rb.mass;
-    }
-
-    public Vector3 GetVelocity()
-    {
-        if (rb == null)
-        {
-            return Vector3.zero;
-        }
-        else
-        {
-            return rb.velocity;
-        }
-    }
-
-    // With respect the origin
-    public float GetSpeed()
-    {
-        return this.rb.velocity.magnitude;
-    }
-
-    // With respect to some other GravityBody
-    public float GetSpeed(GravityBody othergb)
-    {
-        return (this.rb.velocity - othergb.rb.velocity).magnitude;
     }
 
     public static float DistanceBetween(GravityBody a, GravityBody b)
