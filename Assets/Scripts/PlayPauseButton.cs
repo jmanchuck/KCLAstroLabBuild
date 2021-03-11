@@ -17,8 +17,6 @@ public class PlayPauseButton : MonoBehaviour
         UpdateToPauseState();
     }
 
-
-
     public void UpdateToPauseState()
     {
         if (GameManager.paused)

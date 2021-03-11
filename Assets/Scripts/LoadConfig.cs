@@ -30,14 +30,14 @@ public class LoadConfig : MonoBehaviour
         if (savedPath != "")
         {
             filePath = savedPath;
-            config = GetJsonNode(filePath);
-            SetSceneToConfig();
+            SetSceneToConfigPath();
         }
     }
-    public void SetSceneToConfig()
+    public void SetSceneToConfigPath()
     {
         DeleteAllGravityBody();
 
+        config = GetJsonNode(filePath);
         if (config == null)
         {
             return;
@@ -58,6 +58,8 @@ public class LoadConfig : MonoBehaviour
 
         Camera.main.transform.position = cameraPosition;
         Camera.main.transform.LookAt(cameraLookat);
+
+        Debug.Log("Reset to load state, " + this.filePath + config.ToString());
 
         TextManager.GetInstance().UpdateCameraText();
     }
@@ -106,12 +108,8 @@ public class LoadConfig : MonoBehaviour
     public void OpenFile()
     {
         String[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
-        config = GetJsonNode(paths[0]);
-        if (config == null)
-        {
-            return;
-        }
-        SetSceneToConfig();
+        this.filePath = paths[0];
+        SetSceneToConfigPath();
         PlayerPrefs.SetString("filePath", this.filePath);
     }
 
@@ -134,7 +132,7 @@ public class LoadConfig : MonoBehaviour
         return Path.GetExtension(filePath) == ".json";
     }
 
-    public void hideUI(bool hide)
+    public void showUI(bool hide)
     {
         loadPathText.gameObject.SetActive(hide);
         selectFileButton.gameObject.SetActive(hide);

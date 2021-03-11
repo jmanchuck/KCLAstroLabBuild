@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Text;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -15,6 +14,7 @@ public class GameManager : MonoBehaviour
     public PointerEventData pointerEventData;
     public EventSystem eventSystem;
     private static GameManager instance = null;
+    public static float time;
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -36,33 +36,33 @@ public class GameManager : MonoBehaviour
     // Main loop
     private void Update()
     {
+        if (!paused)
+        {
+            time += Time.deltaTime;
+        }
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("keydown");
             RaycastHit hitInfo = new RaycastHit();
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             bool bodyHit = Physics.Raycast(ray, out hitInfo, 100000f);
 
-            Debug.Log(ray.ToString());
-            Debug.Log(hitInfo.transform);
-
-            if (bodyHit)
-            {
-                Debug.Log("gb hit");
-                HandleSelectedObject(hitInfo);
-            }
-            else if (!IsClickButton())
-            {
-                selected = new HashSet<GravityBody>();
-                HasSelected = false;
-                Debug.Log("no hit");
-            }
-            else
-            {
-                Debug.Log("ui hit");
-            }
+            // if (bodyHit)
+            // {
+            //     Debug.Log("gb hit");
+            //     HandleSelectedObject(hitInfo);
+            // }
+            // else if (!IsClickButton())
+            // {
+            //     selected = new HashSet<GravityBody>();
+            //     HasSelected = false;
+            //     Debug.Log("no hit");
+            // }
+            // else
+            // {
+            //     Debug.Log("ui hit");
+            // }
         }
         if (selected.Count == 2)
         {
@@ -71,7 +71,6 @@ public class GameManager : MonoBehaviour
             GbDistance = GravityBody.DistanceBetween(list[0], list[1]);
             HasSelected = true;
         }
-        // textManager.UpdateDistanceText();
     }
 
     private bool IsClickButton()
@@ -94,18 +93,35 @@ public class GameManager : MonoBehaviour
         selected.Add(gb);
     }
 
+    public void Reset()
+    {
+        time = 0;
+        RecentTimes.Reset();
+        TextManager.GetInstance().UpdateTimeText();
+        TextManager.GetInstance().UpdateRecentTimeText();
+        Pause();
+        LoadConfig loadConfig = LoadConfig.GetInstance();
+        loadConfig.SetSceneToConfigPath();
+    }
+
+    public void UpdateRecentTimes()
+    {
+        RecentTimes.Push(time);
+        TextManager.GetInstance().UpdateRecentTimeText();
+    }
+
     public void Pause()
     {
         Time.timeScale = 0;
         paused = true;
-        LoadConfig.GetInstance().hideUI(true);
+        LoadConfig.GetInstance().showUI(true);
     }
 
     public void Unpause()
     {
         Time.timeScale = 1;
         paused = false;
-        LoadConfig.GetInstance().hideUI(false);
+        LoadConfig.GetInstance().showUI(false);
     }
 
     public void TogglePause()
